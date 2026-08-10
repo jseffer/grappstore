@@ -20,9 +20,10 @@
         android:name=".ApplicationImpl"
         android:dataExtractionRules="@xml/backup_rules"
         android:enableOnBackInvokedCallback="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/grappstore_logo"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@drawable/grappstore_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Apps.DayNight"
         android:memtagMode="async">

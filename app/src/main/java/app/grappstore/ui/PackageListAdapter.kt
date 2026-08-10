@@ -94,7 +94,9 @@ fun PackageListItemBinding.set(fragment: Fragment, pkgState: PackageState) {
 
     this.pkgName.maybeSetText(rPackage.label)
 
-    publisher.maybeSetText(rPackage.source.uiName)
+    rPackage.common.publisher?.let {
+        publisher.maybeSetText(it)
+    } ?: publisher.maybeSetText(rPackage.source.uiName)
 
     val releaseChannel = pkgState.preferredReleaseChannel()
     val isStable = releaseChannel == ReleaseChannel.stable

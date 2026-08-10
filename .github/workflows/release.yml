@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REPO_BASE_URL: https://grappstore.sc-solutions.de
-      REPO_FALLBACK_BASE_URL: https://base44.app/api/apps/6a79f9087728b3f53491ea56
       REPO_PUBLIC_KEY: RWR9FfQbqjfLiqvbvwlALze8Oivs0qTHNkQ9dOGeQRVuH9Y4w6+dZbNQ
       REPO_KEY_VERSION: "1"
 
@@ -58,9 +57,8 @@ jobs:
           VERSION_NAME="$($BUILD_TOOLS/aapt2 dump badging "$APK_PATH" | sed -n "s/.*versionName='\([^']*\)'.*/\1/p" | head -n1)"
           SIGNER_SHA256="$($BUILD_TOOLS/apksigner verify --print-certs "$APK_PATH" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | tr '[:upper:]' '[:lower:]')"
           APK_SHA256="$(sha256sum "$APK_PATH" | cut -d' ' -f1)"
-          RELEASE_APK="grappstore-${GITHUB_REF_NAME}.apk"
+          RELEASE_APK="grappstore.apk"
           cp "$APK_PATH" "$RELEASE_APK"
-          cp "$APK_PATH" grappstore-latest.apk
           gzip -9 -c "$APK_PATH" > "${RELEASE_APK}.gz"
           jq -n \
             --arg packageName "$PACKAGE_NAME" \
@@ -74,4 +72,4 @@ jobs:
       - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" grappstore-"$GITHUB_REF_NAME".apk grappstore-"$GITHUB_REF_NAME".apk.gz grappstore-latest.apk grappstore-release.json --verify-tag --generate-notes --title "Grappstore $GITHUB_REF_NAME"
+        run: gh release create "$GITHUB_REF_NAME" grappstore.apk grappstore.apk.gz grappstore-release.json --verify-tag --generate-notes --title "GrAppStore $GITHUB_REF_NAME"
