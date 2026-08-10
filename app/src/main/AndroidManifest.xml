@@ -50,7 +50,7 @@
             android:targetActivity=".ui.MainActivity" />
 
         <activity-alias
-            android:name="org.grapheneos.apps.client.ui.container.MainActivity"
+            android:name="app.grappstore.client.ui.container.MainActivity"
             android:targetActivity=".ui.MainActivity" />
 
         <service

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="app.grapheneos.apps.ui.SearchScreen">
+    tools:context="app.grappstore.ui.SearchScreen">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_input_layout"
@@ -47,6 +47,13 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/search_bar_horizontal_padding"
             app:singleLine="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/pkg_source_Grappstore"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pkg_source_grappstore" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/pkg_source_GrapheneOS"

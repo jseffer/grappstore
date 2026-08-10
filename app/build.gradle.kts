@@ -26,6 +26,7 @@ android {
         signingConfigs {
             create("release") {
                 storeFile = rootProject.file(keystoreProperties["storeFile"]!!)
+                storeType = "PKCS12"
                 storePassword = keystoreProperties["storePassword"] as String
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
@@ -37,24 +38,24 @@ android {
     compileSdk = 36
     buildToolsVersion = "36.1.0"
 
-    namespace = "app.grapheneos.apps"
+    namespace = "app.grappstore"
 
     defaultConfig {
-        applicationId = "app.grapheneos.apps"
+        applicationId = "app.grappstore"
         minSdk = 31
         targetSdk = 36
         versionCode = 36
         versionName = versionCode.toString()
 
         buildConfigField(String::class.java.name, "REPO_BASE_URL",
-            "\"${System.getenv("REPO_BASE_URL") ?: "https://apps.grapheneos.org"}\"")
+            "\"${System.getenv("REPO_BASE_URL") ?: "https://grappstore.sc-solutions.de"}\"")
 
         buildConfigField(String::class.java.name, "REPO_PUBLIC_KEY", "\"${
-            System.getenv("REPO_PUBLIC_KEY") ?: "RWQtZwEu1br1lMh911L3yPOs97cQb9LOks/ALBbqGl21ul695ocWR/ir"
+            System.getenv("REPO_PUBLIC_KEY") ?: "RWR9FfQbqjfLiqvbvwlALze8Oivs0qTHNkQ9dOGeQRVuH9Y4w6+dZbNQ"
         }\"")
 
         buildConfigField(String::class.java.name, "REPO_KEY_VERSION",
-            "\"${System.getenv("REPO_KEY_VERSION") ?: "0"}\"")
+            "\"${System.getenv("REPO_KEY_VERSION") ?: "1"}\"")
     }
 
     buildTypes {

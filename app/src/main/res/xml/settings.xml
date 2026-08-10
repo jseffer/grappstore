@@ -48,4 +48,21 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="false"
+        app:title="@string/about">
+
+        <Preference
+            app:selectable="false"
+            app:summary="@string/publisher_name"
+            app:title="@string/publisher" />
+
+        <Preference
+            app:selectable="false"
+            app:summary="@string/license_name"
+            app:title="@string/license" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

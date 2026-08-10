@@ -1,1 +1,1 @@
--keep,allowoptimization class app.grapheneos.apps.**
+-keep,allowoptimization class app.grappstore.**

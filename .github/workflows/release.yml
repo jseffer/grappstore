@@ -1,0 +1,74 @@
+name: Publish signed APK
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      REPO_BASE_URL: https://grappstore.sc-solutions.de
+      REPO_PUBLIC_KEY: RWR9FfQbqjfLiqvbvwlALze8Oivs0qTHNkQ9dOGeQRVuH9Y4w6+dZbNQ
+      REPO_KEY_VERSION: "1"
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Restore release signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          test -n "$KEYSTORE_B64" || { echo "ANDROID_KEYSTORE_BASE64 is missing" >&2; exit 1; }
+          printf '%s' "$KEYSTORE_B64" | base64 --decode > grappstore-release.p12
+          {
+            echo "storeFile=grappstore-release.p12"
+            echo "storePassword=$STORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > keystore.properties
+
+      - name: Build signed release APK
+        run: ./gradlew :app:assembleRelease --no-daemon
+
+      - name: Create verified release manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK_PATH="$(find app/build/outputs/apk/release -name '*.apk' -type f -print -quit)"
+          test -n "$APK_PATH"
+          BUILD_TOOLS="$ANDROID_HOME/build-tools/36.1.0"
+          PACKAGE_NAME="$($BUILD_TOOLS/aapt2 dump badging "$APK_PATH" | sed -n "s/^package: name='\([^']*\)'.*/\1/p")"
+          VERSION_CODE="$($BUILD_TOOLS/aapt2 dump badging "$APK_PATH" | sed -n "s/.*versionCode='\([^']*\)'.*/\1/p" | head -n1)"
+          VERSION_NAME="$($BUILD_TOOLS/aapt2 dump badging "$APK_PATH" | sed -n "s/.*versionName='\([^']*\)'.*/\1/p" | head -n1)"
+          SIGNER_SHA256="$($BUILD_TOOLS/apksigner verify --print-certs "$APK_PATH" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | tr '[:upper:]' '[:lower:]')"
+          APK_SHA256="$(sha256sum "$APK_PATH" | cut -d' ' -f1)"
+          RELEASE_APK="grappstore-${GITHUB_REF_NAME}.apk"
+          cp "$APK_PATH" "$RELEASE_APK"
+          jq -n \
+            --arg packageName "$PACKAGE_NAME" \
+            --argjson versionCode "$VERSION_CODE" \
+            --arg versionName "$VERSION_NAME" \
+            --arg sha256 "$APK_SHA256" \
+            --arg signingCertSha256 "$SIGNER_SHA256" \
+            '{packageName:$packageName,versionCode:$versionCode,versionName:$versionName,sha256:$sha256,signingCertSha256:$signingCertSha256}' \
+            > grappstore-release.json
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" grappstore-"$GITHUB_REF_NAME".apk grappstore-release.json --verify-tag --generate-notes --title "Grappstore $GITHUB_REF_NAME"

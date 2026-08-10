@@ -11,5 +11,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "AppStore"
+rootProject.name = "Grappstore"
 include(":app")
