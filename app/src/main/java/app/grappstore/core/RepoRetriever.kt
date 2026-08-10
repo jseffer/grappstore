@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.HttpURLConnection.HTTP_NOT_MODIFIED
 import java.net.HttpURLConnection.HTTP_OK
@@ -29,7 +30,21 @@ private const val KEY_VERSION = BuildConfig.REPO_KEY_VERSION
 private val cacheFile = AtomicFile2("repo")
 
 fun fetchRepo(currentRepo: Repo): Repo {
-    val url = "$REPO_BASE_URL/functions/repository-metadata" +
+    var lastNetworkFailure: IOException? = null
+
+    for (baseUrl in listOf(REPO_BASE_URL, BuildConfig.REPO_FALLBACK_BASE_URL).distinct()) {
+        try {
+            return fetchRepoFrom(currentRepo, baseUrl)
+        } catch (error: IOException) {
+            lastNetworkFailure = error
+        }
+    }
+
+    throw lastNetworkFailure ?: IOException("No repository metadata endpoint is configured")
+}
+
+private fun fetchRepoFrom(currentRepo: Repo, baseUrl: String): Repo {
+    val url = "$baseUrl/functions/repository-metadata" +
         "?metadataVersion=$METADATA_VERSION&keyVersion=$KEY_VERSION"
 
     return if (!currentRepo.isDummy) {

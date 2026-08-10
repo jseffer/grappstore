@@ -11,6 +11,20 @@ The long-term SCS repository public key and key version are embedded in the
 client. New catalog apps and releases are signed with the same repository key;
 they do not require a client update or a new key pair.
 
+Version 37 and later use the custom repository domain and fall back to the
+official Base44 function endpoint on HTTP or network errors. Repository
+signature failures never trigger this fallback.
+
+Third-party APKs can be served directly from their verified GitHub or F-Droid
+release URL. The repository publishes the upstream SHA-256 digest, byte size,
+package identity and pinned signing-certificate fingerprint. The client verifies
+all of them before handing an APK to Android's package installer. Grappstore's
+own releases additionally include a gzip asset for compatibility with clients
+from before version 37.
+
+- Public project page: https://grappstore.sc-solutions.de/public
+- Stable APK download: https://github.com/jseffer/grappstore/releases/latest/download/grappstore-latest.apk
+
 ## Identity
 
 - Application name: Grappstore

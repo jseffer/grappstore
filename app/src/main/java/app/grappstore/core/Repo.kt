@@ -330,12 +330,14 @@ class RPackage(val common: RPackageContainer, val versionCode: Long, val abis: A
         val sizes = json.getJSONArray("apkSizes")
         val gzSizes = json.getJSONArray("apkGzSizes")
         val urls = json.optJSONArray("apkUrls")
+        val compression = json.optJSONArray("apkCompression")
 
         val len = names.length()
         require(hashes.length() == len)
         require(sizes.length() == len)
         require(gzSizes.length() == len)
         require(urls == null || urls.length() == len)
+        require(compression == null || compression.length() == len)
 
         val list = ArrayList<Apk>(len)
 
@@ -350,6 +352,7 @@ class RPackage(val common: RPackageContainer, val versionCode: Long, val abis: A
                 sizes.getLong(i),
                 gzSizes.getLong(i),
                 urls?.getString(i),
+                compression?.getString(i) ?: "gzip",
             )
             if (apk.type == Apk.Type.ABI && apk.qualifier != deviceAbi.apkSplitQualifier) {
                 continue
@@ -494,7 +497,14 @@ class Apk(
     val size: Long,
     val compressedSize: Long,
     private val downloadUrlOverride: String? = null,
+    compression: String = "gzip",
 ) {
+    val isCompressed = when (compression) {
+        "gzip" -> true
+        "none" -> false
+        else -> throw IllegalArgumentException("unsupported APK compression: $compression")
+    }
+
     var qualifier = ""
 
     val type: Type = run {

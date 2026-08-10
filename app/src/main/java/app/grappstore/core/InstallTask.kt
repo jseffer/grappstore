@@ -369,7 +369,13 @@ class InstallTask(
         val sha256 = MessageDigest.getInstance("SHA-256")
 
         makeTemporaryFileDescriptor().use { uncompressedFd ->
-            GZIPInputStream(FileInputStream(compressedFd), DEFAULT_BUFFER_SIZE).use { inputStream ->
+            val source = FileInputStream(compressedFd)
+            val verifiedInput = if (apk.isCompressed) {
+                GZIPInputStream(source, DEFAULT_BUFFER_SIZE)
+            } else {
+                source
+            }
+            verifiedInput.use { inputStream ->
             DigestOutputStream(FileOutputStream(uncompressedFd.v), sha256).use { outputStream ->
                 val bytesCopied = inputStream.copyTo2(outputStream, job)
                 if (bytesCopied != apk.size) {

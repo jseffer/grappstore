@@ -44,11 +44,14 @@ android {
         applicationId = "app.grappstore"
         minSdk = 31
         targetSdk = 36
-        versionCode = 36
+        versionCode = 37
         versionName = versionCode.toString()
 
         buildConfigField(String::class.java.name, "REPO_BASE_URL",
             "\"${System.getenv("REPO_BASE_URL") ?: "https://grappstore.sc-solutions.de"}\"")
+
+        buildConfigField(String::class.java.name, "REPO_FALLBACK_BASE_URL",
+            "\"${System.getenv("REPO_FALLBACK_BASE_URL") ?: "https://base44.app/api/apps/6a79f9087728b3f53491ea56"}\"")
 
         buildConfigField(String::class.java.name, "REPO_PUBLIC_KEY", "\"${
             System.getenv("REPO_PUBLIC_KEY") ?: "RWR9FfQbqjfLiqvbvwlALze8Oivs0qTHNkQ9dOGeQRVuH9Y4w6+dZbNQ"
