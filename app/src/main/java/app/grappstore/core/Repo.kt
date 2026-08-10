@@ -162,6 +162,7 @@ class RPackageContainer(val repo: Repo, val packageName: String,
 {
     val description = json.opt("description") as String?
     val publisher = json.opt("publisher") as String?
+    val sortOrder = json.optInt("sortOrder", Int.MAX_VALUE)
     val source: PackageSource = (json.opt("source") as String?).let {
         if (it != null) {
             PackageSource.valueOf(it)

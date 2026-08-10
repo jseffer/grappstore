@@ -3,8 +3,8 @@
 GrAppStore is an SCS-maintained fork of the GrapheneOS App Store for a curated
 application catalog on SCS devices running GrapheneOS.
 
-This repository contains the rebranded Android client. Its Base44 backend and
-administration app are available as the separate GrAppStore project. The client
+This repository contains the rebranded Android client. Its signed repository
+backend and administration app are maintained separately. The client
 loads signed metadata from
 `https://grappstore.sc-solutions.de/functions/repository-metadata`.
 The long-term SCS repository public key and key version are embedded in the
@@ -20,6 +20,11 @@ package identity and pinned signing-certificate fingerprint. The client verifies
 all of them before handing an APK to Android's package installer. GrAppStore's
 own releases additionally include a gzip asset for compatibility with clients
 from before version 37.
+
+When both GitHub and F-Droid are configured for the same package, the backend
+chooses the candidate with the higher Android `versionCode` and uses GitHub as
+the deterministic tie-breaker. Daily polling is limited to due records, and the
+large F-Droid index is cached once per synchronization run.
 
 - Public project page: https://grappstore.sc-solutions.de/public
 - Stable APK download: https://github.com/jseffer/grappstore/releases/latest/download/grappstore.apk
@@ -75,4 +80,5 @@ separate OS based on GrapheneOS.
 The original project is Copyright © 2021-2026 GrapheneOS. GrAppStore
 modifications are Copyright © 2026 SCS. The software remains available under
 the MIT License in [LICENSE](LICENSE). GrapheneOS is a third-party project and
-does not publish or endorse GrAppStore.
+does not publish or endorse GrAppStore. Additional attribution and third-party
+distribution boundaries are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

@@ -115,7 +115,10 @@ open class MainScreen : PackageListFragment<MainScreenBinding>(), MenuProvider {
         }.sortedWith { a, b ->
             val pkg1 = a.rPackage
             val pkg2 = b.rPackage
-            var res = pkg1.source.compareTo(pkg2.source)
+            var res = pkg1.common.sortOrder.compareTo(pkg2.common.sortOrder)
+            if (res == 0) {
+                res = pkg1.source.compareTo(pkg2.source)
+            }
             if (res == 0) {
                 res = pkg1.label.compareTo(pkg2.label)
             }

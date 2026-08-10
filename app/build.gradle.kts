@@ -44,7 +44,7 @@ android {
         applicationId = "app.grappstore"
         minSdk = 31
         targetSdk = 36
-        versionCode = 38
+        versionCode = 39
         versionName = versionCode.toString()
 
         buildConfigField(String::class.java.name, "REPO_BASE_URL",

@@ -19,6 +19,7 @@ import app.grappstore.core.ReleaseChannel
 import app.grappstore.databinding.PackageListItemBinding
 import app.grappstore.util.maybeSetText
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class ViewBindingVH<T : ViewBinding>(val binding: T) : ViewHolder(binding.root)
@@ -81,8 +82,7 @@ fun PackageListItemBinding.set(fragment: Fragment, pkgState: PackageState) {
         Glide.with(fragment)
             .load(iconUrl)
             .placeholder(R.drawable.ic_placeholder_app_icon)
-            .centerInside()
-            .transform(RoundedCorners(20))
+            .transform(CenterCrop(), RoundedCorners(20))
             .into(pkgIcon)
     }
 
